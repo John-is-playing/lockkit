@@ -44,6 +44,24 @@ def test_semaphore_balanced_release_restores():
     assert sem.available == 2
 
 
+def test_semaphore_extra_release_does_not_create_permits():
+    """冗余归还不应凭空造出许可。"""
+    sem = Semaphore(1)
+    assert sem.acquire() is True
+    sem.release()
+    sem.release()
+    sem.release()
+    assert sem.available == 1
+
+
+def test_semaphore_available_never_exceeds_limit():
+    """available 恒不超过 limit（不变量）。"""
+    sem = Semaphore(2)
+    for _ in range(5):
+        sem.release()
+    assert sem.available == sem.limit == 2
+
+
 def test_semaphore_rejects_negative():
     with pytest.raises(ValueError):
         Semaphore(-1)
