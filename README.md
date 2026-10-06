@@ -42,7 +42,7 @@
 
 ```bash
 cd demo/lockkit/repo
-python -m pytest -q            # 基线应 74 passed
+python -m pytest -q            # 基线应 87 passed
 ```
 
 > 基线测试**刻意不覆盖**植入的缺陷路径——缺陷藏在没被覆盖的分支上，
