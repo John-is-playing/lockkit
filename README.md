@@ -33,7 +33,25 @@
 | `is_retryable(exc, retry_on)` | 判定异常是否可重试（含子类） |
 | `Once()` | 最多**成功**执行一次 |
 | `Latch(count)` | 计数闩锁 |
+| `LockSet(*semaphores)` | **有序加锁集**：按稳定 key 排序后统一加锁，避免死锁 |
 | `Meter()` | 运行指标聚合 |
+
+## 有序加锁集（LockSet）
+
+多个锁需要同时持有时，只要加锁顺序不一致就会死锁。`LockSet` 按稳定 key
+排序后统一加锁，并在拿不到任意一个时**回滚已拿到的许可**：
+
+```python
+from lockkit.lockset import LockSet
+
+with LockSet(sem_a, sem_b, sem_c) as acquired:
+    # 内部按稳定 key 排序后统一加锁，拿不到任意一个时回滚已拿到的许可
+    ...
+```
+
+因此无论调用方以什么顺序传入，实际加锁顺序都是一致的，可从根本上避免死锁。
+
+详见 `lockkit/lockset.py`（随本次变更提供）。
 
 > 本库所有与时间有关的行为都接受 `clock` / `sleep` 注入点，
 > 因此无需真正等待即可确定性复现——这是它在沙盒里能被稳定验证的前提。
