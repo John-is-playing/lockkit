@@ -1,0 +1,15 @@
+# 统一使用 LF 换行。
+#
+# 为什么这个仓库需要它：Fissue 在验证 PR 时会把平台返回的 diff 用
+# `git apply` 打到工作副本上。如果仓库里混入 CRLF，diff 的上下文行
+# 与实际文件字节不一致，补丁就会应用失败（报 "patch does not apply"）。
+# 统一成 LF 可以让「平台上的 diff」与「本地克隆的文件」逐字节一致。
+* text=auto eol=lf
+
+# 明确标记二进制文件，避免被当作文本处理
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary

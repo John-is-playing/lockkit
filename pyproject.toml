@@ -1,0 +1,29 @@
+[project]
+name = "lockkit"
+version = "0.7.0"
+description = "用于演示 Fissue 的小型并发原语 / 资源管理工具库"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "lockkit maintainers" }]
+keywords = ["concurrency", "ratelimit", "retry", "pool", "demo"]
+
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.urls]
+Homepage = "https://github.com/"
+Issues = "https://github.com/"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["lockkit"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
