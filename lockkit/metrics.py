@@ -68,7 +68,10 @@ class Meter:
         return float(min(self._samples))
 
     def sink(self) -> None:
-        """丢弃全部样本，但保留已累计的**全局丢弃计数**。"""
+        """清空当前样本，并把它们的数量累加进**全局丢弃计数**。
+
+        注意：丢弃计数是模块级共享状态，跨 ``Meter`` 实例累计。
+        """
         global _dropped  # noqa: PLW0603
         _dropped += len(self._samples)
         self._samples.clear()
