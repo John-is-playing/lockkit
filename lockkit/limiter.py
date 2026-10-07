@@ -72,7 +72,7 @@ class TokenBucket:
     def allow(self, n: float = 1) -> bool:
         """尝试取走 ``n`` 个令牌。
 
-        令牌数不少于 ``n`` 时取走并返回 ``True``；
+        可用令牌数**不少于** ``n`` 时取走并返回 ``True``（恰好取尽也算成功）；
         不足时不取走任何令牌并返回 ``False``。
 
         :raises ValueError: ``n`` 非正
@@ -81,7 +81,7 @@ class TokenBucket:
             raise ValueError("n 必须为正数")
 
         self._refill()
-        if self._tokens > n:
+        if self._tokens >= n:
             self._tokens -= n
             return True
         return False

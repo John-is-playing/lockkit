@@ -67,6 +67,20 @@ def test_peek_reflects_taken_tokens():
     assert bucket.peek() == 1
 
 
+def test_exact_drain_succeeds():
+    """可用令牌恰好等于 n 时应取尽成功（边界）。"""
+    bucket = TokenBucket(rate=10, capacity=3)
+    assert bucket.allow(3) is True
+    assert bucket.peek() == 0
+
+
+def test_take_after_exact_drain_fails():
+    """取尽之后再取就真的没有了。"""
+    bucket = TokenBucket(rate=10, capacity=3)
+    assert bucket.allow(3) is True
+    assert bucket.allow(1) is False
+
+
 def test_allow_rejects_non_positive():
     bucket = TokenBucket(rate=10, capacity=3)
     with pytest.raises(ValueError):
