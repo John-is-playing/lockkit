@@ -58,6 +58,17 @@ def test_once_does_not_cache_success_when_raised():
     assert once.calls >= 1
 
 
+def test_once_retries_after_failure_and_returns_real_value():
+    """首次失败后不缓存，后续调用会重新执行并拿到真实结果。"""
+    once = Once()
+    with pytest.raises(ValueError):
+        once.call(lambda: (_ for _ in ()).throw(ValueError("db not ready")))
+
+    assert once.done is False
+    assert once.call(lambda: "ok") == "ok"
+    assert once.attempts == 2
+
+
 # --- Latch ----------------------------------------------------------------
 
 

@@ -25,11 +25,17 @@ class Once:
         self._done = False
         self._value: Any = None
         self._calls = 0
+        self._attempts = 0
 
     @property
     def calls(self) -> int:
-        """实际执行过的次数。"""
+        """已成功执行并缓存的次数。"""
         return self._calls
+
+    @property
+    def attempts(self) -> int:
+        """尝试过多少次（含失败）。"""
+        return self._attempts
 
     @property
     def done(self) -> bool:
@@ -37,19 +43,25 @@ class Once:
         return self._done
 
     def call(self, fn: Callable[[], Any]) -> Any:
-        """执行 ``fn``（若已成功执行过则直接返回缓存）。"""
+        """执行 ``fn``（若已成功执行过则直接返回缓存）。
+
+        失败**不**缓存：后续调用会重新执行，允许重试。
+        """
         if self._done:
             return self._value
 
+        self._attempts += 1
         self._calls += 1
         try:
             value = fn()
         except BaseException:
-            self._done = True
+            self._done = False
+            self._value = None
             raise
 
         self._value = value
         self._done = True
+        self._calls = 1
         return value
 
     def reset(self) -> None:
@@ -57,6 +69,7 @@ class Once:
         self._done = False
         self._value = None
         self._calls = 0
+        self._attempts = 0
 
 
 class Latch:
