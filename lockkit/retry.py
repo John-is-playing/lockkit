@@ -54,12 +54,17 @@ class RetryPolicy:
         """
         if attempt < 1:
             raise ValueError("attempt 从 1 起")
-        return self.base_delay * (self.factor ** (attempt - 1))
+        delay = self.base_delay * (self.factor ** (attempt - 1))
+        if self.max_delay is not None:
+            delay = min(delay, self.max_delay)
+        return delay
 
     def should_retry(self, exc: BaseException, attempt: int) -> bool:
-        """第 ``attempt`` 次尝试失败后，是否还应继续重试。"""
-        if attempt >= self.attempts:
-            return False
+        """第 ``attempt`` 次尝试失败后，是否还应继续重试。
+
+        尝试次数是否耗尽由调用方（:func:`retry_call`）判断，
+        这里只负责异常类型是否在 ``retry_on`` 之列。
+        """
         return is_retryable(exc, self.retry_on)
 
 
