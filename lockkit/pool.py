@@ -39,8 +39,11 @@ class Semaphore:
         return False
 
     def release(self) -> None:
-        """归还一个许可。"""
-        self._available += 1
+        """归还一个许可。
+
+        可用数以初始许可数 ``_limit`` 封顶：多余的归还不会凭空造出许可。
+        """
+        self._available = min(self._limit, self._available + 1)
 
     @contextmanager
     def hold(self) -> Iterator["Semaphore"]:
