@@ -82,7 +82,7 @@ class Latch:
 
     @property
     def open(self) -> bool:
-        return self._remaining == 0
+        return self._remaining <= 0
 
     def count_down(self, n: int = 1) -> bool:
         """落下 ``n`` 次，返回闩锁是否已打开。
