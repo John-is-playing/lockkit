@@ -40,7 +40,8 @@ class Semaphore:
 
     def release(self) -> None:
         """归还一个许可。"""
-        self._available += 1
+        if self._available < self._limit:
+            self._available += 1
 
     @contextmanager
     def hold(self) -> Iterator["Semaphore"]:
