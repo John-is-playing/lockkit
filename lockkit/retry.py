@@ -13,7 +13,7 @@ def is_retryable(exc: BaseException, retry_on: tuple[type[BaseException], ...]) 
 
     判定包含**子类**：``retry_on=(OSError,)`` 时 ``TimeoutError`` 也应重试。
     """
-    return type(exc) in retry_on
+    return isinstance(exc, retry_on)
 
 
 @dataclass(frozen=True)
