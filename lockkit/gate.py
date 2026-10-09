@@ -45,7 +45,6 @@ class Once:
         try:
             value = fn()
         except BaseException:
-            self._done = True
             raise
 
         self._value = value
