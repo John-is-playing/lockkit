@@ -6,7 +6,6 @@ from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from typing import Any
 
-
 class Semaphore:
     """计数信号量。
 
@@ -54,7 +53,6 @@ class Semaphore:
             yield self
         finally:
             self.release()
-
 
 class ResourcePool:
     """固定大小的资源池。
@@ -106,10 +104,14 @@ class ResourcePool:
     def borrow(self) -> Iterator[Any]:
         """借出一个资源，退出时自动归还。
 
+        无论 ``with`` 代码块正常结束还是抛出异常，资源都会被归还。
+
         :raises RuntimeError: 资源池已耗尽
         """
         item = self.acquire()
         if item is None:
             raise RuntimeError("资源池已耗尽")
-        yield item
-        self.release(item)
+        try:
+            yield item
+        finally:
+            self.release(item)
