@@ -45,7 +45,8 @@ class Once:
         try:
             value = fn()
         except BaseException:
-            self._done = True
+            # 失败不写入已完成状态、不缓存任何返回值；
+            # 异常照旧向上传播，后续调用会重新执行真实现。
             raise
 
         self._value = value
