@@ -81,7 +81,7 @@ class TokenBucket:
             raise ValueError("n 必须为正数")
 
         self._refill()
-        if self._tokens > n:
+        if self._tokens >= n:
             self._tokens -= n
             return True
         return False
