@@ -58,6 +58,8 @@ class Meter:
     @property
     def peak(self) -> float:
         """峰值；没有任何样本时返回 0.0。"""
+        if not self._samples:
+            return 0.0
         return float(max(self._samples))
 
     @property
